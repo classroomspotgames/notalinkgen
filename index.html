@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bunny CDN Link Generator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #111; min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
+    .wrap { width: 100%; max-width: 620px; }
+    h2 { font-size: 20px; font-weight: 600; margin-bottom: 1.25rem; }
+    .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+    label { font-size: 13px; color: #666; display: block; margin-bottom: 5px; }
+    input[type=text] { width: 100%; padding: 9px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 8px; outline: none; background: #fafafa; color: #111; transition: border 0.15s; }
+    input[type=text]:focus { border-color: #185FA5; background: #fff; }
+    .field { margin-top: 14px; }
+    .zone-row { display: flex; gap: 8px; align-items: center; }
+    .zone-row input { flex: 1; }
+    .btn-rand { font-size: 12px; padding: 6px 12px; border-radius: 8px; background: transparent; border: 1px solid #ccc; color: #555; cursor: pointer; white-space: nowrap; }
+    .btn-rand:hover { background: #f0f0f0; }
+    .btn-primary { margin-top: 16px; background: #185FA5; color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; cursor: pointer; width: 100%; }
+    .btn-primary:hover { background: #1450880; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status { font-size: 13px; padding: 10px 14px; border-radius: 8px; margin-top: 12px; display: none; }
+    .status.info { background: #dbeafe; color: #1e40af; display: block; }
+    .status.success { background: #dcfce7; color: #166534; display: block; }
+    .status.danger { background: #fee2e2; color: #991b1b; display: block; }
+    .result-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 1.25rem; display: none; }
+    .result-title { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 10px; }
+    .cdn-url-box { background: #f0f6ff; border: 1px solid #b8d4f5; border-radius: 8px; padding: 12px 14px; font-family: monospace; font-size: 14px; color: #0c3a6e; word-break: break-all; }
+    .copy-btn { font-size: 12px; padding: 6px 14px; margin-top: 8px; border-radius: 8px; background: transparent; border: 1px solid #ccc; color: #555; cursor: pointer; }
+    .copy-btn:hover { background: #f0f0f0; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .meta-item { background: #f7f7f7; border-radius: 8px; padding: 10px 12px; }
+    .meta-item .k { font-size: 11px; color: #888; margin-bottom: 3px; }
+    .meta-item .v { font-size: 13px; color: #111; font-family: monospace; word-break: break-all; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a1a; color: #eee; }
+      .card, .result-card { background: #242424; border-color: #3a3a3a; }
+      input[type=text] { background: #1e1e1e; border-color: #3a3a3a; color: #eee; }
+      input[type=text]:focus { border-color: #4a90d9; background: #222; }
+      .btn-rand { border-color: #444; color: #aaa; }
+      .btn-rand:hover { background: #2e2e2e; }
+      .status.info { background: #1e3a5f; color: #93c5fd; }
+      .status.success { background: #14532d; color: #86efac; }
+      .status.danger { background: #450a0a; color: #fca5a5; }
+      .cdn-url-box { background: #1a2a3a; border-color: #2a4a6a; color: #7ec8f5; }
+      .meta-item { background: #2a2a2a; }
+      .meta-item .k { color: #777; }
+      .meta-item .v { color: #ddd; }
+      .copy-btn { border-color: #444; color: #aaa; }
+      .copy-btn:hover { background: #2e2e2e; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>🐰 Bunny CDN link generator</h2>
+
+    <div class="card">
+      <label>API key</label>
+      <input type="text" id="apiKey" value="ea07c2db-6da6-4515-97c3-60320d3b57462f9433f7-d181-4551-b7d8-fd67ca374dfb" />
+
+      <div class="field">
+        <label>Origin URL</label>
+        <input type="text" id="originUrl" value="https://classroomspot.github.io/" />
+      </div>
+
+      <div class="field">
+        <label>Pull zone name</label>
+        <div class="zone-row">
+          <input type="text" id="zoneName" placeholder="auto-generated" />
+          <button class="btn-rand" onclick="randomizeName()">↻ randomize</button>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="createBtn" onclick="createZone()">Create pull zone</button>
+      <div class="status" id="status"></div>
+    </div>
+
+    <div class="result-card" id="resultCard">
+      <div class="result-title">CDN link</div>
+      <div class="cdn-url-box" id="cdnUrl"></div>
+      <button class="copy-btn" onclick="copyUrl()">copy link</button>
+      <div class="meta-grid" id="metaGrid"></div>
+    </div>
+  </div>
+
+  <script>
+    const adjectives = ['swift','amber','lunar','neon','bright','crystal','delta','echo','frost','golden','hazy','iron','jade','kite','lime','mist','nova','opal','prime','quartz','rapid','solar','titan','ultra','vivid','warp','xenon','yield','zenith','arctic'];
+    const nouns = ['stream','node','cloud','edge','serve','relay','proxy','cache','gate','mesh','vault','grid','hub','link','zone','path','core','base','stack','wave','peak','flux','port','sync','cdn'];
+
+    function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function randomizeName() {
+      document.getElementById('zoneName').value =
+        rand(adjectives) + '-' + rand(nouns) + '-' + Math.floor(Math.random() * 900 + 100);
+    }
+
+    randomizeName();
+
+    function setStatus(msg, type) {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = 'status ' + type;
+    }
+
+    async function createZone() {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      const origin = document.getElementById('originUrl').value.trim();
+      const name   = document.getElementById('zoneName').value.trim();
+      const btn    = document.getElementById('createBtn');
+
+      if (!apiKey || !origin || !name) {
+        setStatus('Please fill in all fields.', 'danger');
+        return;
+      }
+
+      btn.disabled = true;
+      setStatus('Creating pull zone...', 'info');
+      document.getElementById('resultCard').style.display = 'none';
+
+      try {
+        const res = await fetch('https://api.bunny.net/pullzone', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'AccessKey': apiKey
+          },
+          body: JSON.stringify({
+            Name: name,
+            OriginUrl: origin,
+            Type: 0,
+            EnableGeoZoneUS: true,
+            EnableGeoZoneEU: true,
+            EnableGeoZoneASIA: true,
+            EnableGeoZoneSA: true,
+            EnableGeoZoneAF: true
+          })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setStatus('Error ' + res.status + ': ' + (data.Message || JSON.stringify(data)), 'danger');
+          btn.disabled = false;
+          return;
+        }
+
+        const cdnHost = (data.Hostnames && data.Hostnames.length > 0)
+          ? data.Hostnames[0].Value
+          : (name + '.b-cdn.net');
+
+        const cdnLink = 'https://' + cdnHost + '/';
+        document.getElementById('cdnUrl').textContent = cdnLink;
+
+        document.getElementById('metaGrid').innerHTML = [
+          ['zone id',   data.Id       || '—'],
+          ['zone name', data.Name     || name],
+          ['origin',    data.OriginUrl || origin],
+          ['cdn host',  cdnHost],
+        ].map(([k, v]) =>
+          `<div class="meta-item"><div class="k">${k}</div><div class="v">${v}</div></div>`
+        ).join('');
+
+        document.getElementById('resultCard').style.display = 'block';
+        setStatus('Pull zone created successfully!', 'success');
+
+      } catch (e) {
+        setStatus('Request failed: ' + e.message, 'danger');
+      }
+
+      btn.disabled = false;
+    }
+
+    function copyUrl() {
+      const url = document.getElementById('cdnUrl').textContent;
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = event.target;
+        btn.textContent = 'copied!';
+        setTimeout(() => btn.textContent = 'copy link', 1500);
+      });
+    }
+  </script>
+</body>
+</html>
