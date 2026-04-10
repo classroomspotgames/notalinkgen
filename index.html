@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bunny CDN Link Generator</title>
+  <title>classroomspot dc Link Generator</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #111; min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
@@ -16,11 +16,17 @@
     .field { margin-top: 14px; }
     .zone-row { display: flex; gap: 8px; align-items: center; }
     .zone-row input { flex: 1; }
-    .btn-rand { font-size: 12px; padding: 6px 12px; border-radius: 8px; background: transparent; border: 1px solid #ccc; color: #555; cursor: pointer; white-space: nowrap; }
-    .btn-rand:hover { background: #f0f0f0; }
-    .btn-primary { margin-top: 16px; background: #185FA5; color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; cursor: pointer; width: 100%; }
-    .btn-primary:hover { background: #1450880; }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary { margin-top: 16px; background: #185FA5; color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; cursor: pointer; width: 100%; transition: background 0.15s, transform 0.1s, box-shadow 0.15s; box-shadow: 0 2px 8px rgba(24,95,165,0.3); }
+    .btn-primary:hover { background: #1a6ec0; box-shadow: 0 4px 16px rgba(24,95,165,0.45); transform: translateY(-1px); }
+    .btn-primary:active { background: #104882; transform: scale(0.98); box-shadow: 0 1px 4px rgba(24,95,165,0.2); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-rand { font-size: 12px; padding: 6px 12px; border-radius: 8px; background: transparent; border: 1px solid #ccc; color: #555; cursor: pointer; white-space: nowrap; transition: background 0.12s, transform 0.1s; }
+    .btn-rand:hover { background: #e8e8e8; transform: rotate(20deg); }
+    .btn-rand:active { transform: rotate(180deg) scale(0.95); }
+    .copy-btn { font-size: 12px; padding: 6px 14px; margin-top: 8px; border-radius: 8px; background: transparent; border: 1px solid #ccc; color: #555; cursor: pointer; transition: background 0.12s, transform 0.1s; }
+    .copy-btn:hover { background: #f0f0f0; transform: scale(1.03); }
+    .copy-btn:active { transform: scale(0.96); }
     .status { font-size: 13px; padding: 10px 14px; border-radius: 8px; margin-top: 12px; display: none; }
     .status.info { background: #dbeafe; color: #1e40af; display: block; }
     .status.success { background: #dcfce7; color: #166534; display: block; }
@@ -28,8 +34,7 @@
     .result-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 1.25rem; display: none; }
     .result-title { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 10px; }
     .cdn-url-box { background: #f0f6ff; border: 1px solid #b8d4f5; border-radius: 8px; padding: 12px 14px; font-family: monospace; font-size: 14px; color: #0c3a6e; word-break: break-all; }
-    .copy-btn { font-size: 12px; padding: 6px 14px; margin-top: 8px; border-radius: 8px; background: transparent; border: 1px solid #ccc; color: #555; cursor: pointer; }
-    .copy-btn:hover { background: #f0f0f0; }
+
     .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
     .meta-item { background: #f7f7f7; border-radius: 8px; padding: 10px 12px; }
     .meta-item .k { font-size: 11px; color: #888; margin-bottom: 3px; }
@@ -59,7 +64,7 @@
 
     <div class="card">
       <label>API key</label>
-      <input type="text" id="apiKey" value="ea07c2db-6da6-4515-97c3-60320d3b57462f9433f7-d181-4551-b7d8-fd67ca374dfb" />
+      <input type="text" id="apiKey" value="b41e776e-2c1e-46d9-9745-5bd29780f8f53377c561-ff73-4359-b1f2-f2d5784a256d" />
 
       <div class="field">
         <label>Origin URL</label>
